@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تجربة قصات الشعر واللحية - نسخة تجريبية</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #181b22;
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #2a2f3a;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.4rem;
+    }
+
+    .subtitle {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .label-title {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .upload-box {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      background: #12151b;
+    }
+
+    input[type="file"] {
+      max-width: 100%;
+      color: var(--muted);
+    }
+
+    .styles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .style-btn {
+      background: #12151b;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .style-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .style-btn.active {
+      background: var(--accent);
+      color: #111;
+      border-color: var(--accent);
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #111;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .generate-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 560px) {
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card-box {
+      background: #12151b;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .card-box h3 {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .card-box img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .placeholder {
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-radius: 8px;
+      background: #0e1015;
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--accent);
+      min-height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>شوف حلاقتك قبل المقص</h1>
+    <p class="subtitle">نسخة تجريبية سريعة لاختبار قصات الشعر واللحية بالذكاء الاصطناعي</p>
+
+    <div class="section">
+      <span class="label-title">1. صور سيلفي أو ارفع صورة واضحة للوجه</span>
+      <div class="upload-box">
+        <input id="photoInput" type="file" accept="image/*" capture="user" />
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="label-title">2. اختار القصة أو الدقن</span>
+      <div id="stylesGrid" class="styles-grid"></div>
+    </div>
+
+    <button id="generateBtn" class="generate-btn" disabled>ولّد النتيجة الآن</button>
+    <div id="statusText" class="status"></div>
+
+    <div class="preview-grid">
+      <div class="card-box">
+        <h3>الصورة الأصلية</h3>
+        <div id="originalPlaceholder" class="placeholder">ما في صورة مختارة بعد</div>
+        <img id="originalImg" alt="الصورة الأصلية" />
+      </div>
+
+      <div class="card-box">
+        <h3>النتيجة المتوقعة</h3>
+        <div id="resultPlaceholder" class="placeholder">رح تظهر النتيجة هون</div>
+        <img id="resultImg" alt="النتيجة" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STYLES = [
+      {
+        id: "skin-fade",
+        name: "تدريج عالي (Skin Fade)",
+        prompt: "Clean high skin fade haircut on sides with textured short crop on top, natural lighting, realistic hair texture, keep face and identity unchanged"
+      },
+      {
+        id: "low-fade-beard",
+        name: "تدريج خفيف + دقن محددة",
+        prompt: "Low taper fade haircut paired with a neat, sharply lined beard and mustache, realistic barber finish, keep exact face features"
+      },
+      {
+        id: "long-hair",
+        name: "شعر طويل متدرج",
+        prompt: "Shoulder-length layered men hairstyle with natural flow and volume, realistic hair strands, keep original face and expression"
+      },
+      {
+        id: "curly-top",
+        name: "كيرلي من فوق + جوانب مرتبة",
+        prompt: "Defined natural curly hair on top with clean trimmed sides, realistic texture, keep face identity identical"
+      },
+      {
+        id: "full-beard",
+        name: "لحية كاملة كثيفة",
+        prompt: "Full thick well-groomed beard and natural mustache blended smoothly into jawline, keep original hairstyle and face unchanged"
+      },
+      {
+        id: "stubble",
+        name: "دقن خفيفة (سكسوكة / خفيفة)",
+        prompt: "Light short stubble beard evenly distributed along jawline and chin, realistic look, keep original face unchanged"
+      }
+    ];
+
+    let uploadedBase64 = "";
+    let selectedStyle = STYLES[0];
+
+    const photoInput = document.getElementById("photoInput");
+    const stylesGrid = document.getElementById("stylesGrid");
+    const generateBtn = document.getElementById("generateBtn");
+    const statusText = document.getElementById("statusText");
+    const originalImg = document.getElementById("originalImg");
+    const originalPlaceholder = document.getElementById("originalPlaceholder");
+    const resultImg = document.getElementById("resultImg");
+    const resultPlaceholder = document.getElementById("resultPlaceholder");
+
+    function renderStyles() {
+      stylesGrid.innerHTML = "";
+      STYLES.forEach((style, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "style-btn" + (idx === 0 ? " active" : "");
+        btn.textContent = style.name;
+        btn.onclick = () => {
+          document.querySelectorAll(".style-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          selectedStyle = style;
+        };
+        stylesGrid.appendChild(btn);
+      });
+    }
+
+    photoInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        uploadedBase64 = reader.result;
+        originalImg.src = uploadedBase64;
+        originalImg.style.display = "block";
+        originalPlaceholder.style.display = "none";
+        generateBtn.disabled = false;
+        statusText.textContent = "الصورة جاهزة، اختار القصة واضغط على توليد النتيجة.";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // اربط هذا التابع مع الـ API الخاص فيك أو السيرفر الوسيط (Backend)
+    async function callHairstyleAPI(imageBase64, promptText) {
+      // مثال لربط سيرفر خلفي (Backend) يحمي مفتاح الـ API تبعك:
+      // const res = await fetch("/api/hair-tryon", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ image: imageBase64, prompt: promptText })
+      // });
+      // const data = await res.json();
+      // return data.outputImageUrl;
+
+      // وضع تجريبي مؤقت لحد ما تشبك الـ API الفعلي:
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      return imageBase64;
+    }
+
+    generateBtn.addEventListener("click", async () => {
+      if (!uploadedBase64) return;
+
+      generateBtn.disabled = true;
+      statusText.textContent = `جاري تطبيق: ${selectedStyle.name}...`;
+
+      try {
+        const outputUrl = await callHairstyleAPI(uploadedBase64, selectedStyle.prompt);
+        resultImg.src = outputUrl;
+        resultImg.style.display = "block";
+        resultPlaceholder.style.display = "none";
+        statusText.textContent = `تمت التجربة على قصة: ${selectedStyle.name}`;
+      } catch (err) {
+        statusText.textContent = "صار خطأ أثناء التوليد، جرّب مرة ثانية.";
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+
+    renderStyles();
+  </script>
+</body>
+</html>
